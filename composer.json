@@ -1,12 +1,13 @@
 {
     "name": "ynotna/igdb-php",
+    "license": "MIT",
     "description": "PHP Facade/Wrapper for the IGDB API",
-    "require": {
-        "mashape/unirest-php": "^3.0"
-    },
     "autoload": {
         "psr-4": {
           "YnotnA\\Igdb\\": "src/"
         }
+    },
+    "require": {
+        "mashape/unirest-php": "^3.0"
     }
 }
