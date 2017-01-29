@@ -1,5 +1,5 @@
 {
-    "name": "YnotnA/igdb-php",
+    "name": "ynotna/igdb-php",
     "description": "PHP Facade/Wrapper for the IGDB API",
     "require": {
         "mashape/unirest-php": "^3.0"
