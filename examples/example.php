@@ -14,3 +14,7 @@ var_dump($games);
 
 $game = $client->getGameById(11195, array('*'));
 var_dump($game);
+
+// Get Campanies example.
+$companies = $client->getCompanies(array('*'));
+var_dump($companies);
