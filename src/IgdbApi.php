@@ -104,7 +104,11 @@ class IgdbApi
             }
         }
 
-        return $response->body;
+         if (!empty($id) && is_array($response->body)) {
+            return $response->body[0];
+         } else {
+            return $response->body;
+         }
     }
 
     /**
