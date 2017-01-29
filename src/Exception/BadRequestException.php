@@ -13,8 +13,10 @@ final class BadRequestException extends \Exception
     {
         if (isset($response->body->message)) {
             $message = $response->body->message;
-        } else {
+        } elseif (is_array($response->body)) {
             $message = $response->body[0]->error[0];
+        } else {
+            $message = $response->body;
         }
         parent::__construct(
             $message,
