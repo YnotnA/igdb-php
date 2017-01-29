@@ -10,5 +10,7 @@ $client = new IgdbApi(API_KEY);
 
 // see https://igdb.github.io/api/endpoints/ for used fields.
 $games = $client->getGames('mario', array('name'), 10, 0);
-
 var_dump($games);
+
+$game = $client->getGameById(11195, array('*'));
+var_dump($game);

@@ -7,13 +7,14 @@ use YnotnA\Igdb\Exception\InvalidFieldException;
 use YnotnA\Igdb\Exception\InvalidAPiKeyException;
 use YnotnA\Igdb\Exception\TooManyRequestsException;
 use YnotnA\Igdb\Exception\BadRequestException;
+use YnotnA\Igdb\Exception\NotFoundException;
 
 class IgdbApi
 {
     /**
      * The base URL to the API mashape.
      */
-    const ENDPOINT = 'https://igdbcom-internet-game-database-v1.p.mashape.com/%s/?%s';
+    const ENDPOINT = 'https://igdbcom-internet-game-database-v1.p.mashape.com/%s/';
 
     /**
      * The default field.
@@ -34,6 +35,11 @@ class IgdbApi
      * The bad request error code.
      */
     const BAD_REQUEST_CODE = 400;
+
+    /**
+     * The bad request not found error code.
+     */
+    const BAD_REQUEST_NOT_FOUND = 404;
 
     /**
      * The bad api key error code.
@@ -61,10 +67,14 @@ class IgdbApi
         $this->apiKey = $apiKey;
     }
 
-    private function request($info, $query)
+    private function request($info, $query, $id = null)
     {
         // build url.
-        $url = sprintf(static::ENDPOINT, $info, http_build_query($query));
+        if (empty($id)) {
+            $url = sprintf(static::ENDPOINT . '?%s', $info, http_build_query($query));
+        } else {
+            $url = sprintf(static::ENDPOINT . '%s?%s', $info, $id, http_build_query($query));
+        }
         
         // build header.
         $headers = array(
@@ -81,12 +91,13 @@ class IgdbApi
             case static::BAD_API_KEY_CODE:
                 throw new InvalidApiKeyException($response);
                 break;
-            case static::BAD_REQUEST_CODE:
-                throw new BadRequestException($response);
+            case static::BAD_REQUEST_NOT_FOUND:
+                throw new NotFoundException($response);
                 break;
             case static::TOO_MANY_REQUEST_CODE:
                 throw new TooManyRequestsException($response);
                 break;
+            case static::BAD_REQUEST_CODE:
             default:
                 throw new BadRequestException($response);
                 break;
@@ -128,6 +139,22 @@ class IgdbApi
     }
 
     /**
+     * Get character information by id.
+     * 
+     * @param  integer $id    Character ID
+     * @param  array  $fields Fields
+     * @return object         Response body
+     */
+    public function getCharacterById($id, array $fields = array())
+    {
+        $query = array(
+            'fields'    => $this->fieldsBuilder($fields),
+        );
+
+        return $this->request('characters', $query, $id);
+    }
+
+    /**
      * Get companies information.
      * 
      * @param  array|null $fields Fields
@@ -147,6 +174,22 @@ class IgdbApi
     }
 
     /**
+     * Get companie information by id.
+     * 
+     * @param  integer $id    Companie ID
+     * @param  array  $fields Fields
+     * @return object         Response body
+     */
+    public function getCompanieById($id, array $fields = array())
+    {
+        $query = array(
+            'fields'    => $this->fieldsBuilder($fields),
+        );
+
+        return $this->request('companies', $query, $id);
+    }
+
+    /**
      * Get franchies information.
      * 
      * @param  array|null $fields Fields
@@ -162,6 +205,22 @@ class IgdbApi
     }
 
     /**
+     * Get franchise information by id.
+     * 
+     * @param  integer $id    Franchise ID
+     * @param  array  $fields Fields
+     * @return object         Response body
+     */
+    public function getFranchiseById($id, array $fields = array())
+    {
+        $query = array(
+            'fields'    => $this->fieldsBuilder($fields),
+        );
+
+        return $this->request('franchises', $query, $id);
+    }
+
+    /**
      * Get game modes information.
      * 
      * @param  array|null $fields Fields
@@ -174,6 +233,22 @@ class IgdbApi
         );
 
         return $this->request('game_modes', $query);
+    }
+
+    /**
+     * Get game mode information by id.
+     * 
+     * @param  integer $id    GameMode ID
+     * @param  array  $fields Fields
+     * @return object         Response body
+     */
+    public function getGameModeById($id, array $fields = array())
+    {
+        $query = array(
+            'fields'    => $this->fieldsBuilder($fields),
+        );
+
+        return $this->request('game_modes', $query, $id);
     }
 
     /**
@@ -200,6 +275,22 @@ class IgdbApi
     }
 
     /**
+     * Get game information by id.
+     * 
+     * @param  integer $id    Game ID
+     * @param  array  $fields Fields
+     * @return object         Response body
+     */
+    public function getGameById($id, array $fields = array())
+    {
+        $query = array(
+            'fields'    => $this->fieldsBuilder($fields),
+        );
+
+        return $this->request('games', $query, $id);
+    }
+
+    /**
      * Get genres information.
      * 
      * @param  array|null $fields Fields
@@ -215,6 +306,22 @@ class IgdbApi
         );
 
         return $this->request('genres', $query);
+    }
+
+    /**
+     * Get genre information by id.
+     * 
+     * @param  integer $id    Genre ID
+     * @param  array  $fields Fields
+     * @return object         Response body
+     */
+    public function getGenreById($id, array $fields = array())
+    {
+        $query = array(
+            'fields'    => $this->fieldsBuilder($fields),
+        );
+
+        return $this->request('genres', $query, $id);
     }
 
     /**
@@ -237,6 +344,22 @@ class IgdbApi
     }
 
     /**
+     * Get keyword information by id.
+     * 
+     * @param  integer $id    Genre ID
+     * @param  array  $fields Fields
+     * @return object         Response body
+     */
+    public function getKeywordById($id, array $fields = array())
+    {
+        $query = array(
+            'fields'    => $this->fieldsBuilder($fields),
+        );
+
+        return $this->request('keywords', $query, $id);
+    }
+
+    /**
      * Get people information.
      * 
      * @param  array|null $fields Fields
@@ -249,6 +372,22 @@ class IgdbApi
         );
 
         return $this->request('people', $query);
+    }
+
+    /**
+     * Get people information by id.
+     * 
+     * @param  integer $id    Genre ID
+     * @param  array  $fields Fields
+     * @return object         Response body
+     */
+    public function getPeopleById($id, array $fields = array())
+    {
+        $query = array(
+            'fields'    => $this->fieldsBuilder($fields),
+        );
+
+        return $this->request('people', $query, $id);
     }
 
     /**
@@ -271,6 +410,22 @@ class IgdbApi
     }
 
     /**
+     * Get platform information by id.
+     * 
+     * @param  integer $id    Genre ID
+     * @param  array  $fields Fields
+     * @return object         Response body
+     */
+    public function getPlatformById($id, array $fields = array())
+    {
+        $query = array(
+            'fields'    => $this->fieldsBuilder($fields),
+        );
+
+        return $this->request('platforms', $query, $id);
+    }
+
+    /**
      * Get player perspectives information.
      * 
      * @param  array|null $fields Fields
@@ -283,6 +438,22 @@ class IgdbApi
         );
 
         return $this->request('player_perspectives', $query);
+    }
+
+    /**
+     * Get player perspectives information by id.
+     * 
+     * @param  integer $id    Genre ID
+     * @param  array  $fields Fields
+     * @return object         Response body
+     */
+    public function getPlayerPerspectiveById($id, array $fields = array())
+    {
+        $query = array(
+            'fields'    => $this->fieldsBuilder($fields),
+        );
+
+        return $this->request('player_perspectives', $query, $id);
     }
 
     /**
@@ -301,6 +472,22 @@ class IgdbApi
     }
 
     /**
+     * Get pulse information by id.
+     * 
+     * @param  integer $id    Genre ID
+     * @param  array  $fields Fields
+     * @return object         Response body
+     */
+    public function getPulseById($id, array $fields = array())
+    {
+        $query = array(
+            'fields'    => $this->fieldsBuilder($fields),
+        );
+
+        return $this->request('pulses', $query, $id);
+    }
+
+    /**
      * Get release dates information.
      * 
      * @param  array|null $fields Fields
@@ -313,6 +500,22 @@ class IgdbApi
         );
 
         return $this->request('release_dates', $query);
+    }
+
+    /**
+     * Get release date information by id.
+     * 
+     * @param  integer $id    Genre ID
+     * @param  array  $fields Fields
+     * @return object         Response body
+     */
+    public function getReleaseDateById($id, array $fields = array())
+    {
+        $query = array(
+            'fields'    => $this->fieldsBuilder($fields),
+        );
+
+        return $this->request('release_dates', $query, $id);
     }
 
     /**
@@ -331,6 +534,22 @@ class IgdbApi
     }
 
     /**
+     * Get serie information by id.
+     * 
+     * @param  integer $id    Genre ID
+     * @param  array  $fields Fields
+     * @return object         Response body
+     */
+    public function getSerieById($id, array $fields = array())
+    {
+        $query = array(
+            'fields'    => $this->fieldsBuilder($fields),
+        );
+
+        return $this->request('collections', $query, $id);
+    }
+
+    /**
      * Get themes information.
      * 
      * @param  array|null $fields Fields
@@ -346,5 +565,21 @@ class IgdbApi
         );
 
         return $this->request('themes', $query);
+    }
+
+    /**
+     * Get theme information by id.
+     * 
+     * @param  integer $id    Genre ID
+     * @param  array  $fields Fields
+     * @return object         Response body
+     */
+    public function getThemeById($id, array $fields = array())
+    {
+        $query = array(
+            'fields'    => $this->fieldsBuilder($fields),
+        );
+
+        return $this->request('themes', $query, $id);
     }
 }
